@@ -270,28 +270,50 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         switch mode {
         case .library:
             setTitleViewWithTitle(aTitle: libraryVC?.title ?? "")
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: YPConfig.wordings.next,
-                                                                style: .done,
-                                                                target: self,
-                                                                action: #selector(done))
-            navigationItem.rightBarButtonItem?.tintColor = YPConfig.colors.tintColor
-
-            // Disable Next Button until minNumberOfItems is reached.
-            navigationItem.rightBarButtonItem?.isEnabled =
-				libraryVC!.selection.count >= YPConfig.library.minNumberOfItems
+//            navigationItem.rightBarButtonItem = UIBarButtonItem(title: YPConfig.wordings.next,
+//                                                                style: .done,
+//                                                                target: self,
+//                                                                action: #selector(done))
+//            navigationItem.rightBarButtonItem?.tintColor = YPConfig.colors.tintColor
+//
+//
+//            // Disable Next Button until minNumberOfItems is reached.
+//            navigationItem.rightBarButtonItem?.isEnabled =
+//				libraryVC!.selection.count >= YPConfig.library.minNumberOfItems
+            
+            let right1 = UIBarButtonItem(title: YPConfig.wordings.next,
+                                         style: .done,
+                                         target: self,
+                                         action: #selector(done))
+            let right2 = UIBarButtonItem(title: YPConfig.wordings.draft,
+                                         style: .done,
+                                         target: self,
+                                         action: #selector(draft))
+            right1.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .normal)
+            right1.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .disabled)
+            right1.tintColor = YPConfig.colors.tintColor
+            right1.isEnabled =
+                libraryVC!.selection.count >= YPConfig.library.minNumberOfItems
+            
+            
+            
+            navigationItem.rightBarButtonItems = [right1,right2]
+            
 
         case .camera:
             navigationItem.titleView = nil
             title = cameraVC?.title
             navigationItem.rightBarButtonItem = nil
+            navigationItem.rightBarButtonItems = nil
         case .video:
             navigationItem.titleView = nil
             title = videoVC?.title
             navigationItem.rightBarButtonItem = nil
+            navigationItem.rightBarButtonItems = nil
         }
 
-        navigationItem.rightBarButtonItem?.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .normal)
-        navigationItem.rightBarButtonItem?.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .disabled)
+//        navigationItem.rightBarButtonItem?.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .normal)
+//        navigationItem.rightBarButtonItem?.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .disabled)
         navigationItem.leftBarButtonItem?.setFont(font: YPConfig.fonts.leftBarButtonFont, forState: .normal)
     }
     
@@ -321,6 +343,19 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
                 })
             }
         }
+    }
+    
+    @objc
+    /// 草稿
+    func draft() {
+        print("⚠️ YPPickerVC >>> 跳转草稿");
+        guard libraryVC != nil else { print("⚠️ YPPickerVC >>> YPLibraryVC deallocated"); return }
+        if mode == .library {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "jumpDraftVC"),
+                                                                                  object: self, userInfo: nil)
+            
+        }
+
     }
     
     func stopAll() {

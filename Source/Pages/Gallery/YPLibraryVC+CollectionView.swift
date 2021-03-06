@@ -105,6 +105,41 @@ extension YPLibraryVC {
 		})
     }
     
+    /// 判断图片视频选择互斥
+    func isOnlyVideoOrPhotoSelectionPool(indexPath: IndexPath, collectionView: UICollectionView) -> Bool {
+        
+        if selection.count != 0 {
+            let curSection = selection.first;
+            let selectAsset = mediaManager.fetchResult[curSection?.index ?? 0]
+            let asset = mediaManager.fetchResult[indexPath.item]
+            let isVideo = (asset.mediaType == .video)
+            let isSelctVideo = (selectAsset.mediaType == .video)
+            if isVideo != isSelctVideo {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noCanSelect"),
+                                                                                      object: self, userInfo: ["toast":"视频图片不能同时选中"])
+                print("⚠️ YPPickerVC >>> 视频图片不能同时选中")
+               return false
+            } else
+            {
+                if isVideo {
+                    selection.removeAll()
+                    addToSelection(indexPath: indexPath)
+                    collectionView.reloadData()
+
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noCanSelect"),
+                                                                                          object: self, userInfo: ["toast":"视频只能选择一个"])
+                    print("⚠️ YPPickerVC >>> 视频只能选择一个")
+                    return false
+                }
+                return true
+            }
+            
+            
+        } else {
+            return true
+        }
+    }
+    
     /// Checks if there can be selected more items. If no - present warning.
     func checkLimit() {
         v.maxNumberWarningView.isHidden = !isLimitExceeded || multipleSelectionEnabled == false
@@ -189,6 +224,13 @@ extension YPLibraryVC: UICollectionViewDelegate {
                     deselect(indexPath: indexPath)
                 }
             } else if isLimitExceeded == false {
+
+                let isCanSelect = isOnlyVideoOrPhotoSelectionPool(indexPath: indexPath, collectionView: collectionView)
+                if isCanSelect {
+                    print("⚠️ YPPickerVC >>> YPLibraryVC deallocated")
+                } else {
+                    return
+                }
                 addToSelection(indexPath: indexPath)
             }
             collectionView.reloadItems(at: [indexPath])
@@ -196,6 +238,7 @@ extension YPLibraryVC: UICollectionViewDelegate {
         } else {
             selection.removeAll()
             addToSelection(indexPath: indexPath)
+           
             
             // Force deseletion of previously selected cell.
             // In the case where the previous cell was loaded from iCloud, a new image was fetched
@@ -203,6 +246,7 @@ extension YPLibraryVC: UICollectionViewDelegate {
             //
             if let previousCell = collectionView.cellForItem(at: previouslySelectedIndexPath) as? YPLibraryViewCell {
                 previousCell.isSelected = false
+
             }
         }
     }
