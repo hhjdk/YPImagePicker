@@ -121,6 +121,10 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         
         YPHelper.changeBackButtonIcon(self)
         YPHelper.changeBackButtonTitle(self)
+        
+
+        NotificationCenter.default.addObserver(self, selector: #selector(onChangeVideoRecording), name: NSNotification.Name(rawValue: "konChangeVideoRecording"), object: nil)
+    
     }
     
     open override func viewWillAppear(_ animated: Bool) {
@@ -138,6 +142,18 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
             self.setNeedsStatusBarAppearanceUpdate()
         }
     }
+    
+    // 处理通知
+    @objc private func onChangeVideoRecording(_ notify: NSNotification) {
+        let userInfo = notify.userInfo
+        let isRecording = userInfo?["isRecording"]
+        if (isRecording as! String == "1") {
+            self.v.scrollView.isScrollEnabled = false
+        } else {
+            self.v.scrollView.isScrollEnabled = true
+        }
+    }
+
     
     internal func pagerScrollViewDidScroll(_ scrollView: UIScrollView) { }
     
@@ -296,8 +312,14 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
                 libraryVC!.selection.count >= YPConfig.library.minNumberOfItems
             
             
+   
+            let isHaveDraft = UserDefaults.standard.object(forKey: "isHaveDraft")
+            if isHaveDraft != nil && isHaveDraft as! String == "1" {
+                navigationItem.rightBarButtonItems = [right1,right2]
+            } else {
+                navigationItem.rightBarButtonItems = [right1]
+            }
             
-            navigationItem.rightBarButtonItems = [right1,right2]
             
 
         case .camera:
@@ -363,6 +385,11 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         videoVC?.stopCamera()
         cameraVC?.stopCamera()
     }
+    
+    deinit {
+            NotificationCenter.default.removeObserver(self)
+    }
+    
 }
 
 extension YPPickerVC: YPLibraryViewDelegate {

@@ -115,9 +115,9 @@ public struct YPImagePickerConfiguration {
     /// List of default filters which will be added on the filter screen
     public var filters: [YPFilter] = [
         YPFilter(name: "Normal", applier: nil),
-        YPFilter(name: "Nashville滤镜", applier: YPFilter.nashvilleFilter),
-        YPFilter(name: "Toaster滤镜", applier: YPFilter.toasterFilter),
-        YPFilter(name: "1977滤镜", applier: YPFilter.apply1977Filter),
+        YPFilter(name: "Nashville", applier: YPFilter.nashvilleFilter),
+        YPFilter(name: "Toaster", applier: YPFilter.toasterFilter),
+        YPFilter(name: "1977", applier: YPFilter.apply1977Filter),
         YPFilter(name: "Clarendon", applier: YPFilter.clarendonFilter),
         YPFilter(name: "HazeRemoval", applier: YPFilter.hazeRemovalFilter),
         YPFilter(name: "Chrome", coreImageFilterName: "CIPhotoEffectChrome"),

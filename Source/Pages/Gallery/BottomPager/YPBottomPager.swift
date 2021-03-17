@@ -88,6 +88,18 @@ open class YPBottomPager: UIViewController, UIScrollViewDelegate {
     }
     
     func showPage(_ page: Int, animated: Bool = true) {
+        guard page != currentPage && page >= 0 && page < controllers.count else {
+            print("⚠️ 点击当前，或者越界")
+            return
+        }
+        let isRecording = UserDefaults.standard.bool(forKey: "swiftIsisRecording")
+        guard !isRecording else {
+            
+            print("⚠️ 正在录制视频，无法切换")
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noCanSelect"),
+                                                                                  object: self, userInfo: ["toast":"mighty_key_162"])
+            return;
+        }
         let screenWidth = YPImagePickerConfiguration.screenWidth
         let x = CGFloat(page) * screenWidth
         v.scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: animated)

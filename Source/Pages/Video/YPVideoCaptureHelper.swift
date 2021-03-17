@@ -116,35 +116,35 @@ class YPVideoCaptureHelper: NSObject {
     // MARK: - Zoom
     
     public func zoom(began: Bool, scale: CGFloat) {
-        guard let device = videoInput?.device else {
-            return
-        }
-
-        if began {
-            initVideoZoomFactor = device.videoZoomFactor
-            return
-        }
-
-        do {
-            try device.lockForConfiguration()
-            defer { device.unlockForConfiguration() }
-
-            var minAvailableVideoZoomFactor: CGFloat = 1.0
-            if #available(iOS 11.0, *) {
-                minAvailableVideoZoomFactor = device.minAvailableVideoZoomFactor
-            }
-            var maxAvailableVideoZoomFactor: CGFloat = device.activeFormat.videoMaxZoomFactor
-            if #available(iOS 11.0, *) {
-                maxAvailableVideoZoomFactor = device.maxAvailableVideoZoomFactor
-            }
-            maxAvailableVideoZoomFactor = min(maxAvailableVideoZoomFactor, YPConfig.maxCameraZoomFactor)
-
-            let desiredZoomFactor = initVideoZoomFactor * scale
-            device.videoZoomFactor = max(minAvailableVideoZoomFactor,
-                                         min(desiredZoomFactor, maxAvailableVideoZoomFactor))
-        } catch let error {
-            print("💩 \(error)")
-        }
+       guard let device = videoInput?.device else {
+           return
+       }
+       
+       if began {
+           initVideoZoomFactor = device.videoZoomFactor
+           return
+       }
+       
+       do {
+           try device.lockForConfiguration()
+           defer { device.unlockForConfiguration() }
+           
+           var minAvailableVideoZoomFactor: CGFloat = 1.0
+           if #available(iOS 11.0, *) {
+               minAvailableVideoZoomFactor = device.minAvailableVideoZoomFactor
+           }
+           var maxAvailableVideoZoomFactor: CGFloat = device.activeFormat.videoMaxZoomFactor
+           if #available(iOS 11.0, *) {
+               maxAvailableVideoZoomFactor = device.maxAvailableVideoZoomFactor
+           }
+           maxAvailableVideoZoomFactor = min(maxAvailableVideoZoomFactor, YPConfig.maxCameraZoomFactor)
+           
+           let desiredZoomFactor = initVideoZoomFactor * scale
+           device.videoZoomFactor = max(minAvailableVideoZoomFactor,
+										min(desiredZoomFactor, maxAvailableVideoZoomFactor))
+       } catch let error {
+          print("💩 \(error)")
+       }
     }
     
     // MARK: - Stop Camera
@@ -198,6 +198,13 @@ class YPVideoCaptureHelper: NSObject {
     
     public func stopRecording() {
         videoOutput.stopRecording()
+        UserDefaults.standard.setValue(false, forKey: "swiftIsisRecording")
+        UserDefaults.standard.synchronize()
+        
+        /// 发送录制通知
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "konChangeVideoRecording"),
+                                                                              object: self, userInfo: ["isRecording":"0"])
+
     }
     
     // Private
@@ -307,13 +314,9 @@ extension YPVideoCaptureHelper: AVCaptureFileOutputRecordingDelegate {
                            didFinishRecordingTo outputFileURL: URL,
                            from connections: [AVCaptureConnection],
                            error: Error?) {
-        if YPConfig.onlySquareImagesFromCamera {
-            YPVideoProcessor.cropToSquare(filePath: outputFileURL) { [weak self] url in
-                guard let _self = self, let u = url else { return }
-                _self.didCaptureVideo?(u)
-            }
-        } else {
-            self.didCaptureVideo?(outputFileURL)
+        YPVideoProcessor.cropToSquare(filePath: outputFileURL) { [weak self] url in
+            guard let _self = self, let u = url else { return }
+            _self.didCaptureVideo?(u)
         }
         timer.invalidate()
     }

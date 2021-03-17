@@ -16,6 +16,9 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     private let v = YPCameraView(overlayView: nil)
     private var viewState = ViewState()
     
+    var videoTime = 0
+    
+    
     // MARK: - Init
     
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -31,6 +34,9 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
             self?.updateState {
                 $0.progress = progress
                 $0.timeElapsed = timeElapsed
+                
+                print("⚠️ 当前进度时间 >>>\(timeElapsed)");
+                
             }
         }
     }
@@ -52,6 +58,9 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
         // Zoom
         let pinchRecongizer = UIPinchGestureRecognizer(target: self, action: #selector(self.pinch(_:)))
         v.previewViewContainer.addGestureRecognizer(pinchRecongizer)
+        
+        UserDefaults.standard.setValue(false, forKey: "swiftIsisRecording")
+        UserDefaults.standard.synchronize()
     }
 
     func start() {
@@ -134,23 +143,25 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     }
     
     private func startRecording() {
-        /// Stop the screen from going to sleep while recording video
-        DispatchQueue.main.async {
-            UIApplication.shared.isIdleTimerDisabled = true
-        }
-        
         videoHelper.startRecording()
         updateState {
             $0.isRecording = true
         }
+        UserDefaults.standard.setValue(true, forKey: "swiftIsisRecording")
+        UserDefaults.standard.synchronize()
+        /// 发送录制通知
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "konChangeVideoRecording"),
+                                                                              object: self, userInfo: ["isRecording":"1"])
+
     }
     
     private func stopRecording() {
-        /// Reset screen always on to false since the need no longer exists
-        DispatchQueue.main.async {
-            UIApplication.shared.isIdleTimerDisabled = false
+        if viewState.timeElapsed < 3 {
+            print("⚠️ 时间小于3秒 >>>\(viewState.timeElapsed)");
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noCanSelect"),
+                                                                                  object: self, userInfo: ["toast":"mighty_key_165"])
+            return
         }
-        
         videoHelper.stopRecording()
         updateState {
             $0.isRecording = false
