@@ -96,7 +96,7 @@ open class YPBottomPager: UIViewController, UIScrollViewDelegate {
         guard !isRecording else {
             
             print("⚠️ 正在录制视频，无法切换")
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noCanSelect"),
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "swiftToastTip"),
                                                                                   object: self, userInfo: ["toast":"mighty_key_162"])
             return;
         }

@@ -432,9 +432,11 @@ extension YPPickerVC: YPLibraryViewDelegate {
     }
     
     public func noPhotosForOptions() {
-        self.dismiss(animated: true) {
-            self.imagePickerDelegate?.noPhotos()
-        }
+//        self.dismiss(animated: true) {
+//            self.imagePickerDelegate?.noPhotos()
+//        }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "swiftToastTip"),
+                                                                              object: self, userInfo: ["toast":"mighty_key_288"])
     }
     
     public func libraryViewShouldAddToSelection(indexPath: IndexPath, numSelections: Int) -> Bool {

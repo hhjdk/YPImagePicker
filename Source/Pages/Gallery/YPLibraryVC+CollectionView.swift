@@ -115,7 +115,7 @@ extension YPLibraryVC {
             let isVideo = (asset.mediaType == .video)
             let isSelctVideo = (selectAsset.mediaType == .video)
             if isVideo != isSelctVideo {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noCanSelect"),
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "swiftToastTip"),
                                                                                       object: self, userInfo: ["toast":"mighty_key_163"])
                 print("⚠️ YPPickerVC >>> 视频图片不能同时选中")
                return false
@@ -126,7 +126,7 @@ extension YPLibraryVC {
                     addToSelection(indexPath: indexPath)
                     collectionView.reloadData()
 
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noCanSelect"),
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "swiftToastTip"),
                                                                                           object: self, userInfo: ["toast":"mighty_key_164"])
                     print("⚠️ YPPickerVC >>> 视频只能选择一个")
                     return false

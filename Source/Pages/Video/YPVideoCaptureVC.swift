@@ -158,7 +158,7 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     private func stopRecording() {
         if viewState.timeElapsed < 3 {
             print("⚠️ 时间小于3秒 >>>\(viewState.timeElapsed)");
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noCanSelect"),
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "swiftToastTip"),
                                                                                   object: self, userInfo: ["toast":"mighty_key_165"])
             return
         }

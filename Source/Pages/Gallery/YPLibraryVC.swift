@@ -173,6 +173,10 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
             return
         }
         
+        if self.selection.count <= 0 {
+            return
+        }
+        
         multipleSelectionEnabled = !multipleSelectionEnabled
         
         if multipleSelectionEnabled {
