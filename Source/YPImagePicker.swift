@@ -135,6 +135,9 @@ override open func viewDidLoad() {
                 }
             case .video(let video):
                 if YPConfig.showsVideoTrimmer {
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "swiftToastTip"),
+                                                    object: self, userInfo: ["isHud":"0"])
+
                     let videoFiltersVC = YPVideoFiltersVC.initWith(video: video,
                                                                    isFromSelectionVC: false)
                     videoFiltersVC.didSave = { [weak self] outputMedia in

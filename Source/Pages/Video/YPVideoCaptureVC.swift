@@ -162,6 +162,8 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
                                                                                   object: self, userInfo: ["toast":"mighty_key_165"])
             return
         }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "swiftToastTip"),
+                                        object: self, userInfo: ["isHud":"1"])
         videoHelper.stopRecording()
         updateState {
             $0.isRecording = false
