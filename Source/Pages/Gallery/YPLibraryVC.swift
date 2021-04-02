@@ -173,7 +173,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
             return
         }
         
-        if self.selection.count <= 0 {
+        if self.mediaManager.fetchResult.count <= 0 {
             return
         }
         
