@@ -116,7 +116,7 @@ extension YPLibraryVC {
             let isSelctVideo = (selectAsset.mediaType == .video)
             if isVideo != isSelctVideo {
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "swiftToastTip"),
-                                                                                      object: self, userInfo: ["toast":"mighty_key_163"])
+                                                                                      object: self, userInfo: ["toast":"mighty_key_9"])
                 print("⚠️ YPPickerVC >>> 视频图片不能同时选中")
                return false
             } else
@@ -142,7 +142,9 @@ extension YPLibraryVC {
     
     /// Checks if there can be selected more items. If no - present warning.
     func checkLimit() {
-        v.maxNumberWarningView.isHidden = !isLimitExceeded || multipleSelectionEnabled == false
+//        v.maxNumberWarningView.isHidden = !isLimitExceeded || multipleSelectionEnabled == false
+        v.maxNumberWarningView.isHidden = true;
+        
     }
 }
 
