@@ -20,3 +20,4 @@
 "YPImagePickerVideoTooLong" = "Vælg en video, der er mindre end %@ sekunder lang";
 "YPImagePickerVideoTooShort" = "Videoen skal være mindst %@ sekunder";
 "YPImagePickerWarningItemsLimit" = "Grænsen er %d fotos eller videoer";
+"mighty_key_104" = "Draft";

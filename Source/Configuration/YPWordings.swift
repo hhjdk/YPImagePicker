@@ -45,5 +45,5 @@ public struct YPWordings {
     
     
     /// 自定义添加
-    public var draft = ypLocalized("草稿箱")
+    public var draft = ypLocalized("mighty_key_104")
 }
